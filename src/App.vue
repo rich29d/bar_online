@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
     <router-view/>
   </div>
 </template>
@@ -11,13 +10,28 @@ export default {
 };
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="stylus">
+  :root
+    --primary #292b30
+    --secundary #00dc80
+
+  @font-face
+    font-family 'roboto'
+    src url(assets/fonts/Roboto-Regular.ttf)
+
+  @font-face
+    font-family 'roboto'
+    src url(assets/fonts/Roboto-Bold.ttf)
+    font-weight bold
+
+  *
+    box-sizing border-box
+    font-family 'roboto'
+    letter-spacing 1px
+    transition all .3s ease
+
+  body
+    margin: 0
+    padding: 0
+    background-color: var(--primary)
 </style>
