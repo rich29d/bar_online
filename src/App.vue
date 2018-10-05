@@ -9,7 +9,9 @@
 import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import VTooltip from 'v-tooltip'
 
+Vue.use(VTooltip);
 Vue.use(VueAxios, axios);
 
 export default {
@@ -43,6 +45,15 @@ export default {
     margin: 0
     padding: 0
     background-color: var(--primary)
+
+  .vue-tooltip-theme
+    z-index 5
+    transition none
+    background var(--secundary)
+    border-radius 3px
+    color #004226
+    padding 5px 10px
+    margin-top 5px
 
   ::-webkit-scrollbar
       width 15px

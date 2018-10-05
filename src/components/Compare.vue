@@ -9,10 +9,11 @@
             .Drink(
               v-for = 'drink of compare'
               @click = 'removeDrink(drink.index)'
+              v-tooltip.bottom = 'drink.name'
             )
               i.far.fa-times-circle
               img(:src = 'drink.img')
-          button.Btn.Compare__Btn Compare
+          button.Btn.Compare__Btn Comparar
 </template>
 
 <script>

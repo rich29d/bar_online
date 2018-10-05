@@ -10,7 +10,7 @@
             :class = '{selected: isChecked(index)}'
           )
             .Tooltip
-              span compare
+              span comparar
               input.Drink__checkbox(
                 type = 'checkbox'
                 @click = 'toggleCompare(index, isChecked(index))'
@@ -194,14 +194,18 @@ export default {
         align-items center
 
         span
-          margin-top: -2px;
-          margin-right: -15px
-          font-size: 14px;
+          margin-top: -2px
+          position absolute
+          right 20px
+          font-size: 14px
           opacity 0
+          pointer-events none
+          color var(--secundary)
 
         &:hover
           span
             margin-right: 0
+            right 25px
             opacity 1
 
       .Drink__checkbox
