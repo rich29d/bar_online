@@ -19,6 +19,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    addDrink: (context, drink) => context.commit('ADD_DRINK', drink),
     removeDrink: (context, drink) => context.commit('REMOVE_DRINK', drink),
   },
 });

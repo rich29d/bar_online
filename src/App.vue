@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <router-view/>
   </div>
 </template>
@@ -21,6 +22,7 @@ export default {
     --primary #292b30
     --secundary #00dc80
     --dark #202227
+    --danger #ff5151
 
   @font-face
     font-family 'roboto'

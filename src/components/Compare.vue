@@ -6,7 +6,11 @@
             span {{countDrinks}}
             |/3
           .Compare__Items
-            .Drink(v-for = 'drink of compare')
+            .Drink(
+              v-for = 'drink of compare'
+              @click = 'removeDrink(drink.index)'
+            )
+              i.far.fa-times-circle
               img(:src = 'drink.img')
           button.Btn.Compare__Btn Compare
 </template>
@@ -64,6 +68,8 @@ export default {
 
     .Compare__Items
       width 100%
+      display flex
+      flex-direction row-reverse
 
       .Drink
         border-radius 3px
@@ -72,9 +78,28 @@ export default {
         padding 5px
         display inline-block
         margin-right 10px
+        display: flex;
+        position relative
+        align-items center
+        justify-content center
+        cursor pointer
 
-      img
-        height 100%
+        i
+          position absolute
+          font-size 25px
+          color var(--danger)
+          transform scale(0)
+
+        img
+          height 100%
+
+        &:hover
+          i
+            transform scale(1)
+
+          img
+            opacity 0
+            transform scale(.8)
 
   .Compare__Btn
     height 45px

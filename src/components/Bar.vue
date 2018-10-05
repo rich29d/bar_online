@@ -1,21 +1,28 @@
 <template lang="pug">
   div
-    Compare(:class = '{show: checkeds.length > 0}')
+    Compare(:class = '{show: compare.length > 0}')
     main
       Loading(v-if = 'drinks.length === 0')
       .Box
-        .Drink--list
+        .Drink__List
           .Drink--item(
             v-for = '(drink, index) in drinks'
-            :class = '{selected: checkeds.indexOf(index) > -1}'
+            :class = '{selected: isChecked(index)}'
           )
-            input.Drink__checkbox(
-              type = 'checkbox'
-              @click = 'toggleCompare(index, checkeds.indexOf(index) === -1)'
-              v-model = 'checkeds'
-              :value = 'index'
-              :disabled = 'checkeds.length >= 3 && checkeds.indexOf(index) === -1'
-            )
+            .Tooltip
+              span compare
+              input.Drink__checkbox(
+                type = 'checkbox'
+                @click = 'toggleCompare(index, isChecked(index))'
+                :checked = 'isChecked(index)'
+                :id = '`item--${index}`'
+                :value = 'index'
+                :disabled = 'compare.length >= 3 && !isChecked(index)'
+              )
+              label(:for = '`item--${index}`')
+                i.fas(
+                  :class = '{"fa-plus-circle": !isChecked(index), "fa-check-circle": isChecked(index)}'
+                )
             .Drink--img
               img(:src = 'drink.img')
             .Drink--name {{drink.name}}
@@ -26,7 +33,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 import Loading from './Loading';
 import Compare from './Compare';
 
@@ -39,7 +46,6 @@ export default {
 
   data() {
     return {
-      checkeds: [],
       drinks: [],
       loaded: 0,
       response: [],
@@ -64,11 +70,20 @@ export default {
       'REMOVE_DRINK',
     ]),
 
+    ...mapActions([
+      'removeDrink',
+      'addDrink',
+    ]),
+
     toggleCompare(index, toggle) {
       const drink = this.drinks[index];
       drink.index = index;
       // eslint-disable-next-line
-      toggle ? this.ADD_DRINK(drink) : this.REMOVE_DRINK(index);
+      toggle ? this.removeDrink(index) : this.addDrink(drink);
+    },
+
+    isChecked(index) {
+      return this.compare.findIndex(drink => drink.index === index) > -1;
     },
 
     formatPrice(value) {
@@ -97,6 +112,10 @@ export default {
 
       newImage.src = image.img;
     },
+  },
+
+  watch: {
+    compare() {},
   },
 };
 </script>
@@ -135,7 +154,7 @@ export default {
     @media screen and (max-width: 650px)
       width 50%
 
-  .Drink--list
+  .Drink__List
     display flex
     flex-wrap wrap
     max-width 1300px
@@ -167,10 +186,36 @@ export default {
       &.selected
         box-shadow 0 0 0 2px var(--secundary)
 
-      .Drink__checkbox
+      .Tooltip
         position absolute
         top 30px
         right 30px
+        display flex
+        align-items center
+
+        span
+          margin-top: -2px;
+          margin-right: -15px
+          font-size: 14px;
+          opacity 0
+
+        &:hover
+          span
+            margin-right: 0
+            opacity 1
+
+      .Drink__checkbox
+        width 0
+        height 0
+        opacity 0
+
+        & + label
+          color var(--secundary)
+          cursor pointer
+
+        &:disabled + label
+          i
+            color #383740
 
       .Drink--name
         margin-top 20px
