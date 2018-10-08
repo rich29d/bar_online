@@ -3,12 +3,12 @@
       .Compare__Box
         .Compare__Content
           .Compare__CountDrinks
-            span {{countDrinks}}
+            span {{countDrinksCompare}}
             |/3
           .Compare__Items
             .Drink(
               v-for = 'drink of compare'
-              @click = 'removeDrink(drink.index)'
+              @click = 'remove(drink.index)'
               v-tooltip.bottom = 'drink.name'
             )
               i.far.fa-times-circle
@@ -23,7 +23,7 @@ export default {
   name: 'Compare',
   computed: {
     ...mapGetters([
-      'countDrinks',
+      'countDrinksCompare',
     ]),
     ...mapState([
       'compare',
@@ -32,6 +32,9 @@ export default {
   methods: {
     ...mapMutations(['REMOVE_DRINK']),
     ...mapActions(['removeDrink']),
+    remove(index) {
+      this.removeDrink({ index, area: 'compare' });
+    }
   },
 };
 </script>

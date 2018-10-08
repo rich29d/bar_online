@@ -1,6 +1,7 @@
 <template lang="pug">
   div
     Compare(:class = '{show: compare.length > 0}')
+    Cart
     main
       Loading(v-if = 'drinks.length === 0')
       .Box
@@ -13,7 +14,7 @@
               span comparar
               input.Drink__checkbox(
                 type = 'checkbox'
-                @click = 'toggleCompare(index, isChecked(index))'
+                @click = 'toggle(index, isChecked(index), "compare")'
                 :checked = 'isChecked(index)'
                 :id = '`item--${index}`'
                 :value = 'index'
@@ -29,19 +30,26 @@
             .Drink--footer
               .Drink--price {{formatPrice(drink.price)}}
               .drink--button
-                button.Btn.Btn--add Adicionar
+                button.Btn.Btn--add(
+                  @click = 'toggle(index, inCart(index), "cart")'
+                  :class = '{active: inCart(index)}'
+                )
+                  span(v-if = '!inCart(index)') Adicionar
+                  span(v-if = 'inCart(index)') Remover
 </template>
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex';
 import Loading from './Loading';
 import Compare from './Compare';
+import Cart from './Cart';
 
 export default {
   name: 'Bar',
   components: {
     Loading,
     Compare,
+    Cart,
   },
 
   data() {
@@ -54,13 +62,15 @@ export default {
 
   async created() {
     const resp = await this.$http.get('https://my.api.mockaroo.com/drinks.json?key=164c6660');
-    this.response = resp.data;
-    this.loadAllImages();
+    // this.response = resp.data;
+    // this.loadAllImages();
+    this.drinks = resp.data;
   },
 
   computed: {
     ...mapState([
       'compare',
+      'cart',
     ]),
   },
 
@@ -75,15 +85,19 @@ export default {
       'addDrink',
     ]),
 
-    toggleCompare(index, toggle) {
+    toggle(index, toggle, area) {
       const drink = this.drinks[index];
       drink.index = index;
       // eslint-disable-next-line
-      toggle ? this.removeDrink(index) : this.addDrink(drink);
+      toggle ? this.removeDrink({index, area}) : this.addDrink({drink, area});
     },
 
     isChecked(index) {
       return this.compare.findIndex(drink => drink.index === index) > -1;
+    },
+
+    inCart(index) {
+      return this.cart.findIndex(drink => drink.index === index) > -1;
     },
 
     formatPrice(value) {
@@ -113,10 +127,6 @@ export default {
       newImage.src = image.img;
     },
   },
-
-  watch: {
-    compare() {},
-  },
 };
 </script>
 
@@ -144,7 +154,9 @@ export default {
     cursor pointer
     min-height 30px
 
+  &.active,
   .Btn:hover
+    color var(--primary)
     background-color var(--secundary)
 
   .Btn--add

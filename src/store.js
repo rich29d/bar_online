@@ -6,20 +6,26 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     compare: [],
+    cart: [],
   },
   getters: {
-    countDrinks: state => state.compare.length,
+    countDrinksCompare: state => state.compare.length,
+    countDrinksCart: state => state.cart.length,
   },
   mutations: {
-    ADD_DRINK: (state, drink) => state.compare.push(drink),
-    REMOVE_DRINK: (state, index) => {
-      const indexCompare = state.compare.findIndex(drink => drink.index === index);
+    ADD_DRINK: (state, objectItem) => {
+      const { drink, area } = objectItem;
+      state[area].push(drink);
+    },
+    REMOVE_DRINK: (state, objectItem) => {
+      const { index, area } = objectItem;
+      const indexCompare = state[area].findIndex(drink => drink.index === index);
 
-      return state.compare.splice(indexCompare, 1);
+      return state[area].splice(indexCompare, 1);
     },
   },
   actions: {
-    addDrink: (context, drink) => context.commit('ADD_DRINK', drink),
-    removeDrink: (context, drink) => context.commit('REMOVE_DRINK', drink),
+    addDrink: (context, objectItem) => context.commit('ADD_DRINK', objectItem),
+    removeDrink: (context, objectItem) => context.commit('REMOVE_DRINK', objectItem),
   },
 });

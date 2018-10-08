@@ -9,7 +9,7 @@
 import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
-import VTooltip from 'v-tooltip'
+import VTooltip from 'v-tooltip';
 
 Vue.use(VTooltip);
 Vue.use(VueAxios, axios);
