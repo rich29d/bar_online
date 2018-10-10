@@ -21,9 +21,7 @@
                 :disabled = 'compare.length >= 3 && !isChecked(index)'
               )
               label(:for = '`item--${index}`')
-                i.fas(
-                  :class = '{"fa-plus-circle": !isChecked(index), "fa-check-circle": isChecked(index)}'
-                )
+                i.fas(:class = 'classIcon(index)')
             .Drink--img
               img(:src = 'drink.img')
             .Drink--name {{drink.name}}
@@ -78,18 +76,28 @@ export default {
     ...mapMutations([
       'ADD_DRINK',
       'REMOVE_DRINK',
+      'PLUS_AMOUNT',
     ]),
 
     ...mapActions([
       'removeDrink',
       'addDrink',
+      'amount',
     ]),
 
     toggle(index, toggle, area) {
       const drink = this.drinks[index];
       drink.index = index;
-      // eslint-disable-next-line
-      toggle ? this.removeDrink({index, area}) : this.addDrink({drink, area});
+
+      if (toggle) {
+        // eslint-disable-next-line
+        area === 'cart' && this.amount({ index, action: 'ZERO' });
+        this.removeDrink({ index, area });
+      } else {
+        this.addDrink({ drink, area });
+        // eslint-disable-next-line
+        area === 'cart' && this.amount({ index, action: 'PLUS' });
+      }
     },
 
     isChecked(index) {
@@ -98,6 +106,10 @@ export default {
 
     inCart(index) {
       return this.cart.findIndex(drink => drink.index === index) > -1;
+    },
+
+    classIcon(index) {
+      return this.isChecked(index) ? 'fa-check-circle' : 'fa-plus-circle';
     },
 
     formatPrice(value) {

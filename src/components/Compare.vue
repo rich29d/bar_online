@@ -34,7 +34,7 @@ export default {
     ...mapActions(['removeDrink']),
     remove(index) {
       this.removeDrink({ index, area: 'compare' });
-    }
+    },
   },
 };
 </script>

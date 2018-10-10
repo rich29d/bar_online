@@ -10,12 +10,20 @@
               .Cart__List--header
                 p Carrinho de compras
               .Cart__List--main
-                .Cart__Item(v-for = 'drink of cart')
-                  .Cart__Item--img
-                    img(:src = 'drink.img')
-                  .Cart__Item--name {{drink.name}}
+                .Cart__Item(v-for = 'drink of cart' class = 'FadeInDown')
+                  .Cart__Item--product
+                    .Cart__Item--img
+                      img(:src = 'drink.img')
+                    .Cart__Item--name {{drink.name}}
                   .Cart__Item--amount
+                    i.fas.fa-plus(@click = 'plusAmount(drink.index)')
+                    .Amount--number {{drink.amount}}
+                    i.fas.fa-minus(@click = 'minusAmount(drink.index)')
+                  .Cart__Item--price {{formatPrice(drink.amount * drink.price)}}
+                  i.far.fa-times-circle.DeleteDrink(@click = 'deleteDrink(drink.index)')
               .Cart__List--footer
+                p Total
+                  span {{formatPrice(total)}}
 </template>
 
 <script>
@@ -35,10 +43,31 @@ export default {
     ...mapState([
       'cart',
     ]),
+    total() {
+      return this.cart.reduce((result, drink) => result + (drink.amount * drink.price), 0);
+    },
   },
   methods: {
     ...mapMutations(['REMOVE_DRINK']),
-    ...mapActions(['removeDrink']),
+    ...mapActions([
+      'removeDrink',
+      'amount',
+    ]),
+    formatPrice(value) {
+      const val = (value / 1).toFixed(2).replace('.', ',');
+      const formated = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      return `R$ ${formated}`;
+    },
+    plusAmount(index) {
+      this.amount({ index, action: 'PLUS' });
+    },
+    minusAmount(index) {
+      this.amount({ index, action: 'MINUS' });
+    },
+    deleteDrink(index) {
+      this.amount({ index, action: 'ZERO' });
+      this.removeDrink({ index, area: 'cart' });
+    },
   },
 };
 </script>
@@ -102,7 +131,7 @@ header
     position absolute
     right 0
     background color-lista
-    width 300px
+    width 450px
     color #becece
     border-radius 5px
     margin-top 0
@@ -120,23 +149,23 @@ header
 
     .Cart__List
       &--header
-        padding 15px 25px 0
-      
+        padding 15px 25px
+
       &--main
-        padding 0 25px
+        padding 5px 25px
         overflow auto
         max-height 400px
-        background center center / 50% no-repeat
+        background center center / 30% no-repeat
 
         &:empty
           background-image url('../assets/img/beer_hand.svg')
-          padding-top 225px
+          padding-top 200px
           padding-bottom 15px
           text-align center
-          font-size 13px
-          color var(--secundary)
-     
+
           &:after
+            font-size 13px
+            color var(--secundary)
             content 'Nenhum item ainda'
 
         &::-webkit-scrollbar-track
@@ -149,19 +178,63 @@ header
             border-width 5px
 
       &--footer
-        padding 0 25px 25px
+        padding 25px
+
+        span
+          float right
 
   .Cart__Item
     display flex
     align-items center
+    justify-content space-between
     height 45px
-    background #383740
     border-radius 3px
     margin-top 15px
 
-    .Cart__Item--img
+    &--product
+      display flex
+      align-items center
+      width 50%
+
+    &--img
       padding 5px
+      padding-left 0
+      margin-left -10px
 
       img
         height 35px
+
+    &--amount
+      display flex
+      align-items center
+
+      i
+        color var(--secundary)
+        font-size 9px
+        cursor pointer
+
+      .Amount--number
+        width 25px
+        text-align center
+
+    &--price
+      width 25%
+      text-align right
+
+.DeleteDrink
+  color var(--danger)
+  cursor pointer
+
+@keyframes fadeInDown
+  from
+    opacity 0
+    transform translateY(-30px)
+
+  to
+    opacity 1
+    transform translateY(0)
+
+.FadeInDown
+  animation fadeInDown .3s ease
+
 </style>
