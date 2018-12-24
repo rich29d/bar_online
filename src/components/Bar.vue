@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    Compare(:class = '{show: compare.length > 0}')
+    Compare(:class = '{Show: compare.length > 0}')
     Cart
     main
       Loading(v-if = 'drinks.length === 0')
@@ -26,7 +26,7 @@
               img(:src = 'drink.img')
             .Drink--name {{drink.name}}
             .Drink--footer
-              .Drink--price {{formatPrice(drink.price)}}
+              .Drink--price {{price(drink.price)}}
               .drink--button
                 button.Btn.Btn--add(
                   @click = 'toggle(index, inCart(index), "cart")'
@@ -41,6 +41,7 @@ import { mapState, mapMutations, mapActions } from 'vuex';
 import Loading from './Loading';
 import Compare from './Compare';
 import Cart from './Cart';
+import { formatPrice } from '../functions';
 
 export default {
   name: 'Bar',
@@ -60,8 +61,6 @@ export default {
 
   async created() {
     const resp = await this.$http.get('https://my.api.mockaroo.com/drinks.json?key=164c6660');
-    // this.response = resp.data;
-    // this.loadAllImages();
     this.drinks = resp.data;
   },
 
@@ -84,6 +83,10 @@ export default {
       'addDrink',
       'amount',
     ]),
+
+    price(value) {
+      return formatPrice(value);
+    },
 
     toggle(index, toggle, area) {
       const drink = this.drinks[index];
@@ -110,12 +113,6 @@ export default {
 
     classIcon(index) {
       return this.isChecked(index) ? 'fa-check-circle' : 'fa-plus-circle';
-    },
-
-    formatPrice(value) {
-      const val = (value / 1).toFixed(2).replace('.', ',');
-      const formated = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      return `R$ ${formated}`;
     },
 
     loadAllImages() {
@@ -146,10 +143,11 @@ export default {
   .Compare
     margin-top -65px
 
-    &.show
+    &.Show
       margin-top 0
 
   .Box
+    margin-top 35px
     padding 50px 30px
 
     @media screen and (max-width: 650px)

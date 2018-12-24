@@ -19,15 +19,16 @@
                     i.fas.fa-plus(@click = 'plusAmount(drink.index)')
                     .Amount--number {{drink.amount}}
                     i.fas.fa-minus(@click = 'minusAmount(drink.index)')
-                  .Cart__Item--price {{formatPrice(drink.amount * drink.price)}}
+                  .Cart__Item--price {{price(drink.amount * drink.price)}}
                   i.far.fa-times-circle.DeleteDrink(@click = 'deleteDrink(drink.index)')
               .Cart__List--footer
                 p Total
-                  span {{formatPrice(total)}}
+                  span {{price(total)}}
 </template>
 
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
+import { formatPrice } from '../functions';
 
 export default {
   name: 'Cart',
@@ -40,30 +41,35 @@ export default {
     ...mapGetters([
       'countDrinksCart',
     ]),
+
     ...mapState([
       'cart',
     ]),
+
     total() {
       return this.cart.reduce((result, drink) => result + (drink.amount * drink.price), 0);
     },
   },
   methods: {
     ...mapMutations(['REMOVE_DRINK']),
+
     ...mapActions([
       'removeDrink',
       'amount',
     ]),
-    formatPrice(value) {
-      const val = (value / 1).toFixed(2).replace('.', ',');
-      const formated = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      return `R$ ${formated}`;
+
+    price(value) {
+      return formatPrice(value);
     },
+
     plusAmount(index) {
       this.amount({ index, action: 'PLUS' });
     },
+
     minusAmount(index) {
       this.amount({ index, action: 'MINUS' });
     },
+
     deleteDrink(index) {
       this.amount({ index, action: 'ZERO' });
       this.removeDrink({ index, area: 'cart' });
@@ -95,6 +101,7 @@ header
 .Cart
   margin-left auto
   position relative
+  top 65px
 
   .Cart__Icon
     display flex
